@@ -1,0 +1,241 @@
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #172033;
+  background: #f4f6fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 10% 5%, rgba(88, 80, 236, 0.13), transparent 30rem),
+    #f4f6fb;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.page-shell {
+  width: min(1080px, calc(100% - 40px));
+  min-height: 100vh;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 440px;
+  gap: 72px;
+  align-items: center;
+  padding: 56px 0;
+}
+
+.intro h1 {
+  max-width: 650px;
+  margin: 14px 0 18px;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+
+.intro > p {
+  max-width: 590px;
+  color: #5d667a;
+  font-size: 1.15rem;
+  line-height: 1.7;
+}
+
+.eyebrow,
+.overline {
+  color: #5650ec;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.workshop-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.workshop-meta span {
+  padding: 9px 13px;
+  border: 1px solid #dfe3ec;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  color: #4a5366;
+  font-size: 0.88rem;
+}
+
+.checkout-card {
+  padding: 32px;
+  border: 1px solid rgba(213, 218, 230, 0.85);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 30px 80px rgba(31, 38, 72, 0.14);
+}
+
+.card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #eaecf2;
+}
+
+.overline {
+  margin: 0 0 8px;
+}
+
+.card-heading h2 {
+  margin: 0;
+  font-size: 1.45rem;
+  letter-spacing: -0.025em;
+}
+
+.price-badge {
+  flex: 0 0 auto;
+  padding: 8px 11px;
+  border-radius: 9px;
+  background: #efefff;
+  color: #4a43d9;
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.coupon-block {
+  padding: 24px 0;
+  border-bottom: 1px solid #eaecf2;
+}
+
+label {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+input {
+  border: 1px solid #d7dbe5;
+  border-radius: 10px;
+  background: #fff;
+  color: #172033;
+}
+
+.coupon-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 11px;
+}
+
+.coupon-row input {
+  min-width: 0;
+  flex: 1;
+  padding: 12px 13px;
+}
+
+.coupon-row button {
+  border: 0;
+  border-radius: 10px;
+  padding: 0 16px;
+  background: #5650ec;
+  color: white;
+  cursor: pointer;
+  font-weight: 750;
+}
+
+.coupon-status-row {
+  display: flex;
+  min-height: 24px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.message {
+  margin: 0;
+  color: #596276;
+  font-size: 0.82rem;
+}
+
+.message[data-kind="error"] {
+  color: #c3364a;
+}
+
+.message[data-kind="success"] {
+  color: #178255;
+}
+
+.link-button {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: #5650ec;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.totals {
+  display: grid;
+  gap: 14px;
+  margin: 26px 0;
+}
+
+.totals div {
+  display: flex;
+  justify-content: space-between;
+  color: #626b7d;
+}
+
+.totals dd {
+  margin: 0;
+}
+
+.total-row {
+  margin-top: 4px;
+  padding-top: 18px;
+  border-top: 1px dashed #d7dbe5;
+  color: #172033 !important;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.secondary-button {
+  width: 100%;
+  border: 1px solid #d7dbe5;
+  border-radius: 11px;
+  padding: 12px;
+  background: white;
+  color: #3e475a;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button:hover {
+  filter: brightness(0.97);
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(86, 80, 236, 0.24);
+  outline-offset: 2px;
+}
+
+@media (max-width: 850px) {
+  .page-shell {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding: 44px 0;
+  }
+
+  .intro h1 {
+    font-size: clamp(3rem, 14vw, 5rem);
+  }
+}

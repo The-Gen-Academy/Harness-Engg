@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workshop Checkout</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="intro" aria-labelledby="page-title">
+        <span class="eyebrow">LIVE WORKSHOP</span>
+        <h1 id="page-title">AI Engineering Workshop</h1>
+        <p>Build dependable AI agents by designing the environment around the model.</p>
+        <div class="workshop-meta">
+          <span>3 hours</span>
+          <span>Hands-on</span>
+          <span>Beginner friendly</span>
+        </div>
+      </section>
+
+      <section class="checkout-card" aria-labelledby="checkout-title">
+        <div class="card-heading">
+          <div>
+            <p class="overline">YOUR ORDER</p>
+            <h2 id="checkout-title">Complete registration</h2>
+          </div>
+          <span class="price-badge">$100 / seat</span>
+        </div>
+
+        <div class="coupon-block">
+          <label for="coupon">Coupon</label>
+          <div class="coupon-row">
+            <input id="coupon" autocomplete="off" placeholder="Enter coupon code" />
+            <button id="apply-coupon" type="button">Apply coupon</button>
+          </div>
+          <div class="coupon-status-row">
+            <p id="coupon-message" class="message" aria-live="polite"></p>
+            <button id="remove-coupon" class="link-button" type="button" hidden>
+              Remove coupon
+            </button>
+          </div>
+        </div>
+
+        <dl class="totals">
+          <div>
+            <dt>Subtotal</dt>
+            <dd id="subtotal">$100.00</dd>
+          </div>
+          <div>
+            <dt>Discount</dt>
+            <dd id="discount">−$0.00</dd>
+          </div>
+          <div class="total-row">
+            <dt>Total</dt>
+            <dd id="total">$100.00</dd>
+          </div>
+        </dl>
+
+        <button id="reset-demo" class="secondary-button" type="button">Reset demo</button>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

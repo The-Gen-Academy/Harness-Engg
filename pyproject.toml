@@ -1,0 +1,29 @@
+[project]
+name = "harness-demo"
+version = "0.1.0"
+description = "A three-stage demonstration of model, agent, and harness engineering"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "openai",
+    "playwright",
+    "python-dotenv",
+    "pytest",
+    "rich",
+    "typer",
+    "unidiff",
+]
+
+[project.scripts]
+harness-demo = "harness_demo.cli:app"
+
+[build-system]
+requires = ["uv_build>=0.9.7,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
