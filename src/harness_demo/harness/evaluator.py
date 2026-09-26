@@ -6,7 +6,7 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-from harness_demo.browser import run_browser_flows
+from harness_demo.browser import ACCEPTANCE_FLOWS, run_browser_flows
 from harness_demo.diffing import changed_files
 from harness_demo.events import EventRecorder
 from harness_demo.paths import STARTER_ROOT
@@ -68,7 +68,7 @@ def evaluate_workspace(workspace: Path, recorder: EventRecorder) -> Evaluation:
 
     for result in run_browser_flows(
         workspace,
-        ["reported_bug", "remove_coupon"],
+        list(ACCEPTANCE_FLOWS),
     ):
         label = result.name.replace("_", " ").title()
         if result.passed:
@@ -119,8 +119,10 @@ def evaluate_workspace(workspace: Path, recorder: EventRecorder) -> Evaluation:
         failure = (
             "Architecture check failed: app.js must contain zero references to state.totalCents. "
             "Remove totalCents from state; in render(), compute a local totalCents from "
-            "PRICE_CENTS and state.activeCoupon. applyCoupon() and removeCoupon() should change "
-            "only activeCoupon before rendering."
+            "PRICE_CENTS * state.quantity and state.activeCoupon. applyCoupon() and "
+            "removeCoupon() should change only activeCoupon before rendering. Preserve the "
+            "quantity handler so it updates state.quantity and renders; reset must restore "
+            "state.quantity and the quantity input to 1, clear the coupon, and render."
         )
         failures.append(failure)
         recorder.emit("eval", failure, status="failure")

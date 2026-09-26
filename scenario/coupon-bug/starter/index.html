@@ -28,6 +28,22 @@
           <span class="price-badge">$100 / seat</span>
         </div>
 
+        <div class="quantity-block">
+          <div>
+            <label for="quantity">Seats</label>
+            <p id="quantity-hint">Choose 1–10 seats.</p>
+          </div>
+          <input
+            id="quantity"
+            type="number"
+            min="1"
+            max="10"
+            step="1"
+            value="1"
+            aria-describedby="quantity-hint"
+          />
+        </div>
+
         <div class="coupon-block">
           <label for="coupon">Coupon</label>
           <div class="coupon-row">

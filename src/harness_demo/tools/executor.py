@@ -166,8 +166,9 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
         "type": "function",
         "name": "check_checkout",
         "description": (
-            "Exercise one or more checkout flows in a single browser session. During initial "
-            "diagnosis, run only reported_bug; the completion gate checks all acceptance flows."
+            "Exercise one or more checkout flows in a single browser session. reported_bug "
+            "checks repeated coupon application; quantity_coupon checks changing quantity with "
+            "an active coupon, repeated application, removal, reapplication, and reset."
         ),
         "parameters": {
             "type": "object",

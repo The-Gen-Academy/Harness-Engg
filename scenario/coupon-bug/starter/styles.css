@@ -110,9 +110,28 @@ input {
   font-weight: 750;
 }
 
+.quantity-block,
 .coupon-block {
   padding: 24px 0;
   border-bottom: 1px solid #eaecf2;
+}
+
+.quantity-block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.quantity-block p {
+  margin: 6px 0 0;
+  color: #626b7d;
+  font-size: 0.82rem;
+}
+
+.quantity-block input {
+  width: 80px;
+  padding: 12px 13px;
 }
 
 label {

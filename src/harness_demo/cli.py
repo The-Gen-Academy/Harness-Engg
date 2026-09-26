@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import shutil
 import time
+from dataclasses import asdict
 from pathlib import Path
 from typing import Annotated
 
@@ -13,7 +14,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from harness_demo.agent_loop import AgentLoop, AgentSession
-from harness_demo.browser import run_browser_flows
+from harness_demo.browser import ACCEPTANCE_FLOWS, run_browser_flows
 from harness_demo.events import EventRecorder
 from harness_demo.harness.completion import decide_completion
 from harness_demo.harness.evaluator import evaluate_workspace
@@ -42,6 +43,7 @@ reveal private chain-of-thought; communicate through actions, outcomes, and a co
 HARNESS_RUN_TIMEOUT_SECONDS = 90
 HARNESS_ATTEMPT_TOOL_CALLS = 8
 HARNESS_ATTEMPT_MODEL_TURNS = 8
+HARNESS_MAX_REVISIONS = 1
 
 
 def _preloaded_context(files: list[tuple[str, str]]) -> str:
@@ -49,9 +51,11 @@ def _preloaded_context(files: list[tuple[str, str]]) -> str:
     if not files:
         return ""
     sections = [
-        "The harness has already read the files it requires before any write, so the "
-        "required-read gate is satisfied. Their current contents are below; they are "
-        "authoritative, so do not spend turns re-reading them."
+        (
+            "The harness has already read the files it requires before any write, so the "
+            "required-read gate is satisfied. Their current contents are below; they are "
+            "authoritative, so do not spend turns re-reading them."
+        )
     ]
     sections.extend(f"--- {path} ---\n{content.rstrip()}" for path, content in files)
     return "\n\n".join(sections)
@@ -148,6 +152,31 @@ def serve(
 
 
 @app.command()
+def verify() -> None:
+    """Check the current checkout against the same browser requirements after either stage."""
+    workspace = ensure_workspace()
+    recorder = EventRecorder("verify", console)
+    results = run_browser_flows(workspace, list(ACCEPTANCE_FLOWS))
+    for result in results:
+        recorder.emit(
+            "verify",
+            f"{result.name}: expected {result.expected}, observed {result.observed}",
+            status="success" if result.passed else "failure",
+            data=asdict(result),
+        )
+    passed = all(result.passed for result in results)
+    run_dir = recorder.finalize(
+        {
+            "status": "passed" if passed else "failed",
+            "checks": [asdict(result) for result in results],
+        }
+    )
+    _show_run_dir(run_dir)
+    if not passed:
+        raise typer.Exit(1)
+
+
+@app.command()
 def llm() -> None:
     """Stage 1: ask a model for advice without tools or repository access."""
     _require_api_key()
@@ -207,14 +236,18 @@ def _run_agent_stage(*, harnessed: bool) -> None:
 
     try:
         if not harnessed:
-            tools = ToolExecutor(policy, recorder, max_calls=18)
+            tools = ToolExecutor(
+                policy,
+                recorder,
+                max_calls=HARNESS_ATTEMPT_TOOL_CALLS * (HARNESS_MAX_REVISIONS + 1),
+            )
             recorder.emit("model", f"Using {model.model} with {len(tools.schemas)} tools")
             loop = AgentLoop(
                 model,
                 tools,
                 recorder,
                 instructions=instructions,
-                max_model_turns=12,
+                max_model_turns=HARNESS_ATTEMPT_MODEL_TURNS * (HARNESS_MAX_REVISIONS + 1),
             )
             session = AgentSession()
             session = loop.run(task, session)
@@ -233,7 +266,7 @@ def _run_agent_stage(*, harnessed: bool) -> None:
             _show_run_dir(run_dir)
             return
 
-        max_revisions = 1
+        max_revisions = HARNESS_MAX_REVISIONS
         evaluation = None
         deadline = time.monotonic() + HARNESS_RUN_TIMEOUT_SECONDS
         total_tool_calls = 0
@@ -241,20 +274,21 @@ def _run_agent_stage(*, harnessed: bool) -> None:
         session = AgentSession()
         rejected_patch = ""
 
-        reproduction = run_browser_flows(workspace, ["reported_bug"])[0]
-        reproduction_status = "success" if not reproduction.passed else "warning"
-        recorder.emit(
-            "harness",
-            (
-                "Reproduced reported bug before model work: "
-                f"expected {reproduction.expected}, observed {reproduction.observed}"
-            ),
-            status=reproduction_status,
-        )
+        reproductions = run_browser_flows(workspace, ["reported_bug", "quantity_coupon"])
+        reproduction_details = []
+        for result in reproductions:
+            detail = f"{result.name}: expected {result.expected}, observed {result.observed}"
+            reproduction_details.append(detail)
+            recorder.emit(
+                "harness",
+                f"Checked reported behavior before model work: {detail}",
+                status="success" if not result.passed else "warning",
+                data=asdict(result),
+            )
         reproduction_context = (
-            "The harness already reproduced the reported browser flow before this attempt. "
-            f"It expected {reproduction.expected} and observed {reproduction.observed}. "
-            "Do not spend a turn reproducing it again."
+            "The harness already checked both reported browser flows before this attempt:\n"
+            + "\n".join(reproduction_details)
+            + "\nDo not spend a turn reproducing them again."
         )
 
         with WorkspaceCheckpoint(workspace) as checkpoint:

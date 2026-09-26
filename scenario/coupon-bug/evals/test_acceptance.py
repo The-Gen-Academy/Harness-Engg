@@ -7,14 +7,14 @@ from pathlib import Path
 
 import pytest
 
-from harness_demo.browser import run_browser_flow
+from harness_demo.browser import ACCEPTANCE_FLOWS, run_browser_flow
 
 WORKSPACE = Path(os.environ.get("CHECKOUT_WORKSPACE", ".workspaces/checkout")).resolve()
 
 
 @pytest.mark.parametrize(
     "flow",
-    ["reported_bug", "remove_coupon"],
+    ACCEPTANCE_FLOWS,
 )
 def test_acceptance_flow(flow: str) -> None:
     result = run_browser_flow(WORKSPACE, flow)
